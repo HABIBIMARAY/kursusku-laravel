@@ -2,31 +2,46 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+
+
+/*
+|--------------------------------------------------------------------------
+| HALAMAN BERANDA
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
-    $courses = [
-        [
-            'code' => 'WEB-01',
-            'name' => 'Web Dasar',
-            'description' => 'Belajar HTML, CSS, dan dasar pembuatan website.',
-            'price' => 240000,
-            'duration' => '4 Minggu',
-        ],
-        [
-            'code' => 'PHP-01',
-            'name' => 'PHP Dasar',
-            'description' => 'Mempelajari pemrograman PHP dan logika backend.',
-            'price' => 340000,
-            'duration' => '5 Minggu',
-        ],
-        [
-            'code' => 'LAR-01',
-            'name' => 'Laravel Dasar',
-            'description' => 'Membangun aplikasi web menggunakan framework Laravel.',
-            'price' => 500000,
-            'duration' => '6 Minggu',
-        ],
-    ];
+    return view('home');
+})->name('home');
 
-    return view('home', compact('courses'));
-});
+
+/*
+|--------------------------------------------------------------------------
+| HALAMAN PENDAFTARAN
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/pendaftaran', function () {
+    return view('pendaftaran');
+})->name('pendaftaran');
+
+
+/*
+|--------------------------------------------------------------------------
+| PROSES PREVIEW PENDAFTARAN
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/pendaftaran/preview', function (Request $request) {
+
+    // Validasi data formulir pendaftaran
+    $data = $request->validate([
+        'nama' => 'required|string|max:100',
+        'email' => 'required|email|max:100',
+        'kursus' => 'required|in:Web Development,PHP Programming,Laravel Framework',
+    ]);
+
+    // Menampilkan halaman preview
+    return view('preview-pendaftaran', compact('data'));
+})->name('pendaftaran.preview');
