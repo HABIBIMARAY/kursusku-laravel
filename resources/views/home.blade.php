@@ -51,7 +51,8 @@
                 </a>
 
                 <!-- MENU PENDAFTARAN -->
-                <a href="{{ route('pendaftaran') }}">
+
+                <a href="{{ route('enrollments.index') }}">
                     Pendaftaran
                 </a>
 
@@ -307,8 +308,9 @@
 
                 </div>
 
-                <a href="{{ route('pendaftaran') }}" class="btn-primary">
+                <a href="{{ route('enrollments.create') }}" class="btn-primary">
                     Daftar Sekarang
+
                 </a>
 
             </div>

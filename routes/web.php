@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\EnrollmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,3 +50,5 @@ Route::post('/pendaftaran/preview', function (Request $request) {
 */
 
 Route::resource('courses', CourseController::class);
+Route::resource('enrollments', EnrollmentController::class)
+    ->only(['index', 'create', 'store']);

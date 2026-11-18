@@ -36,9 +36,15 @@
             <p>Data kursus yang tersimpan di database.</p>
         </div>
 
-        <a href="{{ route('courses.create') }}" class="btn btn-primary">
-            + Tambah Kursus
-        </a>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <a href="{{ route('courses.create') }}" class="btn btn-primary">
+                + Tambah Kursus
+            </a>
+
+            <a href="{{ route('enrollments.index') }}" class="btn btn-light">
+                Data Pendaftaran
+            </a>
+        </div>
     </div>
 
     <div class="table-wrap">
