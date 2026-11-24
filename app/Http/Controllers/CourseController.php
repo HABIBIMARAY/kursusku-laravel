@@ -5,15 +5,42 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
+use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
     /**
      * Menampilkan daftar kursus.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $courses = Course::latest()->get();
+        // Validasi pencarian dan filter status
+        $validated = $request->validate([
+            'q' => 'nullable|string|max:255',
+            'status' => 'nullable|in:open,closed,draft',
+        ]);
+
+        $query = Course::query();
+
+        // Search berdasarkan kode dan nama kursus
+        if (!empty($validated['q'])) {
+            $keyword = $validated['q'];
+
+            $query->where(function ($query) use ($keyword) {
+                $query->where('code', 'like', '%' . $keyword . '%')
+                    ->orWhere('name', 'like', '%' . $keyword . '%');
+            });
+        }
+
+        // Filter berdasarkan status kursus
+        if (!empty($validated['status'])) {
+            $query->where('status', $validated['status']);
+        }
+
+        // Pagination 10 data per halaman
+        $courses = $query->latest()
+            ->paginate(10)
+            ->withQueryString();
 
         return view('courses.index', compact('courses'));
     }
