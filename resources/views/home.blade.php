@@ -13,6 +13,121 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* HEADER DAN MENU */
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .menu-wrapper {
+            position: relative;
+            margin-left: auto;
+        }
+
+
+        .menu-toggle {
+            width: 46px;
+            height: 42px;
+            border: 1px solid #0284c7 !important;
+            border-radius: 10px;
+            background: #0f172a !important;
+            color: #38bdf8 !important;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: .2s;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 21px;
+            height: 2.5px;
+            background: #38bdf8 !important;
+            border-radius: 5px;
+            transition: .2s;
+        }
+
+        .menu-toggle:hover {
+            background: #0369a1 !important;
+            border-color: #38bdf8 !important;
+        }
+
+        .menu-toggle:hover span {
+            background: #ffffff !important;
+        }
+
+
+        .menu-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 52px;
+            width: 220px;
+            background: #0f172a !important;
+            border: 1px solid #0284c7;
+            border-radius: 12px;
+            padding: 9px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, .35);
+            z-index: 999;
+        }
+
+        .menu-dropdown.show {
+            display: block;
+        }
+
+        .menu-dropdown a,
+        .menu-dropdown button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: #f8fafc !important;
+            text-align: left;
+            text-decoration: none;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .menu-dropdown a:hover,
+        .menu-dropdown button:hover {
+            background: #0369a1 !important;
+            color: #ffffff !important;
+        }
+
+        .menu-dropdown .logout-button {
+            color: #fca5a5 !important;
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: #334155;
+            margin: 5px 0;
+        }
+
+
+        .menu-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 5px 0;
+        }
+
+        @media (max-width: 480px) {
+            .menu-dropdown {
+                width: 190px;
+            }
+        }
+    </style>
+
 </head>
 
 <body>
@@ -22,7 +137,7 @@
         <div class="container header-top">
 
             <!-- BRAND KURSUSKU -->
-            <a href="/" class="brand">
+            <a href="{{ route('home') }}" class="brand">
                 <div class="brand-logo">K</div>
 
                 <div>
@@ -31,35 +146,63 @@
                 </div>
             </a>
 
-            <!-- MILESTONE -->
-            <div class="milestone">
-                Milestone 7
+            <!-- MENU GARIS TIGA -->
+            <div class="menu-wrapper">
+
+                <button type="button"
+                    class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Buka menu"
+                    aria-expanded="false"
+                    aria-controls="menuDropdown">
+                    ☰
+                </button>
+
+                <div class="menu-dropdown" id="menuDropdown">
+
+                    <!-- MENU BERANDA -->
+                    <a href="{{ route('home') }}">
+                        🏠 Beranda
+                    </a>
+
+                    @auth
+
+                    <!-- MENU COURSES -->
+                    <a href="{{ route('courses.index') }}">
+                        📚 Courses
+                    </a>
+
+                    <!-- MENU PROFIL -->
+                    <a href="{{ route('profile') }}">
+                        👤 Profil Saya
+                    </a>
+
+                    <div class="menu-divider"></div>
+
+                    <!-- MENU LOGOUT -->
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+
+                        <button type="submit" class="logout-button">
+                            ↪ Logout
+                        </button>
+                    </form>
+
+                    @else
+
+                    <!-- MENU LOGIN -->
+                    <a href="{{ route('login') }}">
+                        🔐 Login
+                    </a>
+
+                    @endauth
+
+                </div>
+
             </div>
 
         </div>
     </header>
-
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="container nav-content">
-
-            <div class="nav-links">
-
-                <!-- MENU BERANDA -->
-                <a href="/" class="active">
-                    Beranda
-                </a>
-
-                <!-- MENU PENDAFTARAN -->
-
-                <a href="{{ route('enrollments.index') }}">
-                    Pendaftaran
-                </a>
-
-            </div>
-
-        </div>
-    </nav>
 
     <!-- HERO -->
     <main>
@@ -310,7 +453,6 @@
 
                 <a href="{{ route('enrollments.create') }}" class="btn-primary">
                     Daftar Sekarang
-
                 </a>
 
             </div>
@@ -339,6 +481,51 @@
         </div>
 
     </footer>
+
+    <!-- JAVASCRIPT MENU -->
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const menuDropdown = document.getElementById('menuDropdown');
+
+        menuToggle.addEventListener('click', function() {
+
+            menuDropdown.classList.toggle('show');
+
+            const isOpen = menuDropdown.classList.contains('show');
+
+            menuToggle.setAttribute('aria-expanded', isOpen);
+
+        });
+
+        // Tutup menu jika pengguna klik di luar menu
+        document.addEventListener('click', function(event) {
+
+            if (
+                !menuToggle.contains(event.target) &&
+                !menuDropdown.contains(event.target)
+            ) {
+
+                menuDropdown.classList.remove('show');
+
+                menuToggle.setAttribute('aria-expanded', 'false');
+
+            }
+
+        });
+
+        // Tutup menu dengan tombol Escape
+        document.addEventListener('keydown', function(event) {
+
+            if (event.key === 'Escape') {
+
+                menuDropdown.classList.remove('show');
+
+                menuToggle.setAttribute('aria-expanded', 'false');
+
+            }
+
+        });
+    </script>
 
 </body>
 
